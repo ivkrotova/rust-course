@@ -1,6 +1,14 @@
-/// Entry point of the program.
-///
-/// Returns unit type () by default, which is similar to void in other languages.
+/// Module to store helper functions.
+mod helpers {
+
+    /// Public greeting function.
+    pub fn greet() {
+        // returns unit type () by default, which is similar to void in other languages
+        println!("Hello, world!");
+    }
+}
+
 fn main() {
-    println!("Hello, world!");
+    // run the greeting function from the helpers module
+    helpers::greet();
 }
