@@ -17,38 +17,36 @@ A collection of concepts, tools, and techniques learned during the Yandex Rust c
 
 ### Essential Rust Components
 
-#### Clippy - Linter
+### fmt vs. check vs. clippy
 
-**Command:** `rustup component add clippy`
-
-**What it does:** Installs Clippy, Rust's official linter that analyzes your code and suggests improvements for correctness, performance, and style.
-
-**Usage:**
-```bash
-cargo clippy                    # Run linter
-cargo clippy -- -D warnings     # Treat warnings as errors
-```
-
-Helps to maintain code more idiomatic.
-
-
-
-#### Rustfmt - Formatter
-
-**Command:** `rustup component add rustfmt`
-
-**What it does:** Installs rustfmt, Rust's official code formatter that automatically formats your code according to the Rust style guide.
+#### cargo fmt
+**What it does:** Automatically formats your code to match Rust style guidelines (spacing, indentation, line breaks). Doesn't change logic, just makes code consistent and readable.
 
 **Usage:**
 ```bash
-cargo fmt                      # Format all code in project, use in the root folder
+cargo fmt                      # Format all code in project
 cargo fmt --check              # Check if code is formatted (CI/CD)
-rustfmt src/main.rs            # Format specific file
 ```
 
-If you want to use custom rules, not the default ones, you can add ```rustfmt.toml``` or ```.rustfmt.toml``` to the root folder and store there your custom rules.
+#### cargo check
+**What it does:** Compiles your code to check for errors but doesn't produce an executable. Much faster than `cargo build` because it skips the final steps. Use this constantly while coding to catch type errors, borrowing issues, etc.
 
-Run ```cargo fmt``` before commiting.
+**Usage:**
+```bash
+cargo check                    # Quick compilation check
+```
+
+#### cargo clippy
+**What it does:** A linter that analyzes your code for common mistakes, non-idiomatic patterns, and performance issues. It catches things like unnecessary clones, overly complex logic, or better ways to write something. Goes beyond what the compiler checks.
+
+**Usage:**
+```bash
+cargo clippy                   # Run linter
+cargo clippy -- -D warnings    # Treat warnings as errors
+```
+
+#### Typical Workflow
+Run `check` frequently while coding → run `clippy` before committing → run `fmt` to clean up formatting before pushing.
 
 ---
 
@@ -104,6 +102,57 @@ mod my_module {
 - Regular comments (`//` or `/* */`) can be placed anywhere
 - Doc comments on macro invocations (like `println!`) don't work - use regular comments instead
 - Doc comments support Markdown formatting
+
+### Modules
+
+**The basic idea:** A module is just a namespace that contains definitions - functions, structs, traits, and even other modules. Use the `mod` keyword to create them.
+
+Let's say we're building a simple app and want to organize user-related code:
+
+```rust
+// You can define a module inline
+mod users {
+    pub fn create_user(name: &str) -> String {
+        format!("Created user: {}", name)
+    }
+    
+    fn internal_helper() {
+        // This is private by default
+    }
+}
+
+fn main() {
+    let result = users::create_user("Alice");
+    println!("{}", result);
+}
+```
+
+**Key things to know:**
+
+Everything in a module is **private by default**. If you want something to be accessible from outside the module, you need to mark it with `pub` (like `pub fn create_user` above). This is Rust's way of enforcing encapsulation - you decide what's part of your public API.
+
+You can also **split modules into separate files**, which is what you'll do in real projects. If you have a file called `users.rs`, you can use it as a module:
+
+```rust
+// In main.rs
+mod users;  // This looks for users.rs
+
+fn main() {
+    users::create_user("Alice");
+}
+```
+
+The `use` keyword lets you **bring things into scope** so you don't have to write the full path every time:
+
+```rust
+use users::create_user;
+
+fn main() {
+    create_user("Alice");  // No need for users:: prefix
+}
+```
+
+For larger projects, you can nest modules (like folders within folders), and you use `mod.rs` files or the newer style with folder names to organize them.
 
 ### Ownership & Borrowing
 *Notes to be added...*
