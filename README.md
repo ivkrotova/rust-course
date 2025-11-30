@@ -4,7 +4,7 @@ Working through the Yandex Rust course. This repo tracks my progress and keeps n
 
 ## What's Here
 
-- **[LEARNING_NOTES.md](LEARNING_NOTES.md)** – running notes on Rust concepts, tools, and patterns
+- **[notes/](notes/)** – learning notes on Rust concepts, tools, and best practices
 - **src/** – code exercises and examples
 
 ## Tools
